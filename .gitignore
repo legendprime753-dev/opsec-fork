@@ -45,3 +45,6 @@ __pycache__/
 CLAUDE.md
 .planning/
 AGENTS.md
+
+# Build output
+dist/

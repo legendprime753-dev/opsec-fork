@@ -18,8 +18,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public final class UpdateChecker {
 
-    private static final String RELEASES_URL = "https://api.github.com/repos/aurickk/OpSec/releases/latest";
-    private static final String FALLBACK_RELEASE_URL = "https://github.com/aurickk/OpSec/releases/latest";
+    private static final String MODRINTH_PROJECT_URL = "https://modrinth.com/mod/opsec-fork";
+    private static final String MODRINTH_API_URL = "https://api.modrinth.com/v2/project/opsec-fork/version";
+    private static final String FALLBACK_RELEASE_URL = MODRINTH_PROJECT_URL;
 
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -37,7 +38,7 @@ public final class UpdateChecker {
     }
 
     /**
-     * Fires an async HTTP GET to the GitHub releases API to check for updates.
+     * Fires an async HTTP GET to the Modrinth API to check for updates.
      * Non-blocking: runs on a daemon thread via CompletableFuture.
      */
     public static void checkForUpdate() {
@@ -45,9 +46,9 @@ public final class UpdateChecker {
             try {
                 String currentVersion = Opsec.getVersion();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(RELEASES_URL))
-                        .header("User-Agent", "OpSec-Mod/" + currentVersion)
-                        .header("Accept", "application/vnd.github.v3+json")
+                        .uri(URI.create(MODRINTH_API_URL))
+                        .header("User-Agent", "OpSec-Fork/" + currentVersion)
+                        .header("Accept", "application/json")
                         .timeout(Duration.ofSeconds(10))
                         .GET()
                         .build();
@@ -55,27 +56,26 @@ public final class UpdateChecker {
                 HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+                    com.google.gson.JsonArray versions = JsonParser.parseString(response.body()).getAsJsonArray();
+                    if (!versions.isEmpty()) {
+                        JsonObject latest = versions.get(0).getAsJsonObject();
+                        String tagName = latest.has("version_number") ? latest.get("version_number").getAsString() : null;
 
-                    String tagName = json.has("tag_name") ? json.get("tag_name").getAsString() : null;
-                    String htmlUrl = json.has("html_url") ? json.get("html_url").getAsString() : null;
+                        if (tagName != null) {
+                            String version = (tagName.startsWith("v") || tagName.startsWith("V")) ? tagName.substring(1) : tagName;
+                            latestVersion = version;
+                            releaseUrl = MODRINTH_PROJECT_URL;
 
-                    if (tagName != null) {
-                        // Strip leading "v" or "V" if present (e.g., "V1.0.5" -> "1.0.5")
-                        String version = (tagName.startsWith("v") || tagName.startsWith("V")) ? tagName.substring(1) : tagName;
-                        latestVersion = version;
-                        releaseUrl = htmlUrl != null ? htmlUrl : FALLBACK_RELEASE_URL;
-
-                        // Any difference means user should update
-                        if (!version.equals(currentVersion)) {
-                            updateAvailable = true;
-                            Opsec.LOGGER.info("[OpSec] Update available: {} -> {} ({})", currentVersion, version, releaseUrl);
-                        } else {
-                            Opsec.LOGGER.debug("[OpSec] Mod is up to date ({})", currentVersion);
+                            if (!version.equals(currentVersion)) {
+                                updateAvailable = true;
+                                Opsec.LOGGER.info("[OpSec] Update available on Modrinth: {} -> {} ({})", currentVersion, version, releaseUrl);
+                            } else {
+                                Opsec.LOGGER.debug("[OpSec] Mod is up to date ({})", currentVersion);
+                            }
                         }
                     }
                 } else {
-                    Opsec.LOGGER.debug("[OpSec] GitHub API returned status {}", response.statusCode());
+                    Opsec.LOGGER.debug("[OpSec] Modrinth API returned status {}", response.statusCode());
                 }
             } catch (Exception e) {
                 Opsec.LOGGER.debug("[OpSec] Update check failed: {}", e.getMessage());

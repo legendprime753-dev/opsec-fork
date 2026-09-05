@@ -1,31 +1,20 @@
 <p align="center">
 <img src="https://github.com/user-attachments/assets/9adba640-2570-4c22-9355-4f13aa5d4507" alt="opsectransparent" width="15%"/>
 </p>
-<h1 align="center">OpSec</h1>
-
+<h1 align="center">OpSec (Fork)</h1>
 
 <p align="center">A client-side Minecraft mod that provides protection against client fingerprinting, tracking exploits, and other privacy focused features.</p>
 
 <p align="center">
-<a href="https://modrinth.com/mod/opsec"><img alt="Modrinth Downloads" src="https://img.shields.io/modrinth/dt/opsec?logo=modrinth&logoColor=white&label=Modrinth&color=00AF5C"></a>
-<a href="https://modrinth.com/mod/opsec/versions"><img alt="Supported Minecraft Versions" src="https://img.shields.io/badge/Available%20for-1.20%20%E2%80%93%2026.2-00AF5C"></a>
-<a href="https://www.curseforge.com/minecraft/mc-mods/opsec"><img alt="CurseForge Downloads" src="https://img.shields.io/curseforge/dt/1519411?logo=curseforge&logoColor=white&label=Curseforge&color=F16436"></a>
-<a href="https://www.curseforge.com/minecraft/mc-mods/opsec"><img alt="Supported Minecraft Versions" src="https://img.shields.io/badge/Available%20for-1.20%20%E2%80%93%2026.2-F16436"></a>
-<a href="https://github.com/aurickk/OpSec/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/aurickk/OpSec/total?logo=github&logoColor=white&label=GitHub&color=6e5494"></a>
-<a href="https://github.com/aurickk/OpSec/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/aurickk/OpSec?logo=github&logoColor=white&label=Release&color=6e5494"></a>
+<a href="https://modrinth.com/mod/opsec-fork"><img alt="Modrinth" src="https://img.shields.io/badge/Modrinth-opsec--fork-00AF5C?logo=modrinth&logoColor=white"></a>
+<a href="https://github.com/legendprime753-dev/opsec-fork"><img alt="GitHub Fork" src="https://img.shields.io/badge/GitHub-opsec--fork-181717?logo=github&logoColor=white"></a>
+<a href="https://github.com/aurickk/OpSec"><img alt="Original Mod" src="https://img.shields.io/badge/Original%20by-aurickk-blue?logo=github"></a>
+<a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-orange"></a>
 </p>
 
-
-> [!WARNING]
-> This is a passion project built and maintained with **AI**.
-
-> [!IMPORTANT]
-> Fake phishing sites and Discord servers has been distributing **trojanized** builds of OpSec. Only download OpSec from these official sources:
-> - **[Modrinth](https://modrinth.com/mod/opsec)**
-> - **[GitHub Releases](https://github.com/aurickk/OpSec/releases)**
-> - **[CurseForge](https://www.curseforge.com/minecraft/mc-mods/opsec)** (updated less frequently)
->
-> Builds from anywhere else are not official and may be malicious.
+> [!NOTE]
+> **Community Fork Notice**: This is an independently maintained fork of [OpSec by Aurick](https://github.com/aurickk/OpSec).
+> It removes upstream false-positive integrity check screens on custom builds, prepares Modrinth publishing, and provides automated multi-version builds. See [`NOTICE.md`](NOTICE.md) and [`MODRINTH.md`](MODRINTH.md) for details.
 
 ## What it does 
 

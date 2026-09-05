@@ -2,15 +2,16 @@
 	"schemaVersion": 1,
 	"id": "opsec",
 	"version": "${version}",
-	"name": "OpSec",
-	"description": "Advanced client brand spoofing, tracking exploit protections, and other privacy focused features.",
+	"name": "OpSec (Fork)",
+	"description": "Community fork of OpSec: Advanced client brand spoofing, tracking exploit protections, and other privacy focused features.",
 	"authors": [
-		"Aurick"
+		"Fork Maintainer",
+		"Aurick (Original Author)"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/mod/opsec",
-		"sources": "https://github.com/aurickk/OpSec",
-		"issues": "https://github.com/aurickk/OpSec/issues"
+		"homepage": "https://modrinth.com/mod/opsec-fork",
+		"sources": "https://github.com/legendprime753-dev/opsec-fork",
+		"issues": "https://github.com/legendprime753-dev/opsec-fork/issues"
 	},
 	"license": "GPL-3.0-only",
 	"icon": "assets/opsec/icon.png",
