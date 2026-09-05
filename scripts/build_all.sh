@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Script to build all compatible Stonecutter versions and collect release JARs for Modrinth
+# Script to build all Stonecutter versions and collect release JARs for Modrinth
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 DIST_DIR="$ROOT_DIR/dist"
@@ -16,39 +16,21 @@ mkdir -p "$DIST_DIR"
 rm -f "$DIST_DIR"/*.jar
 
 JAVA_MAJOR=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2 | cut -d'.' -f1)
-echo "Current Java version detected: $JAVA_MAJOR"
 
-# Standard versions that build on Java 21+
-JAVA21_VERSIONS=(
-    ":1.20.1:remapJar"
-    ":1.20.2:remapJar"
-    ":1.20.4:remapJar"
-    ":1.20.6:remapJar"
-    ":1.21.1:remapJar"
-    ":1.21.4:remapJar"
-    ":1.21.6:remapJar"
-    ":1.21.9:remapJar"
-    ":1.21.11:remapJar"
-)
-
-# Future versions that require Java 25+
-JAVA25_VERSIONS=(
-    ":26.1:jar"
-    ":26.2:jar"
-)
-
-echo "[1/2] Compiling release targets with Gradle..."
-
-# Always build the standard versions
-./gradlew "${JAVA21_VERSIONS[@]}"
-
-# Build 26.x if Java 25+ is installed
-if [ "$JAVA_MAJOR" -ge 25 ] 2>/dev/null; then
-    echo "Building Minecraft 26.x targets (Java $JAVA_MAJOR)..."
-    ./gradlew "${JAVA25_VERSIONS[@]}"
-else
-    echo "Note: Minecraft 26.x targets require Java 25 (current is $JAVA_MAJOR). Skipping 26.x in local build. (GitHub Actions will build all versions including 26.x with Java 25)."
+# Auto-detect JDK 25 from Gradle cache if system java is < 25
+if [ "$JAVA_MAJOR" -lt 25 ] 2>/dev/null; then
+    JDK25_DIR=$(find "$HOME/.gradle/jdks" -maxdepth 1 -type d -name "*25*" 2>/dev/null | head -n 1)
+    if [ -n "$JDK25_DIR" ] && [ -x "$JDK25_DIR/bin/java" ]; then
+        echo "Using downloaded JDK 25 at: $JDK25_DIR"
+        export JAVA_HOME="$JDK25_DIR"
+        export PATH="$JAVA_HOME/bin:$PATH"
+        JAVA_MAJOR=25
+    fi
 fi
+
+echo "Active Java version: $(java -version 2>&1 | head -n 1)"
+echo "[1/2] Compiling all version targets (1.20.1 to 26.2)..."
+./gradlew remapAll
 
 echo "[2/2] Collecting release JARs into dist/..."
 find versions -path "*/build/libs/opsec-*.jar" ! -name "*-sources.jar" | while read -r jarfile; do
@@ -59,7 +41,7 @@ done
 
 echo ""
 echo "=================================================="
-echo "  Build Complete! Modrinth Release JARs in dist/: "
+echo "  Build Complete! All 11 Modrinth JARs in dist/:   "
 echo "=================================================="
 ls -lh "$DIST_DIR"/opsec-*.jar
 echo "=================================================="
